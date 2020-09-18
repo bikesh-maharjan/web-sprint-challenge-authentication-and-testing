@@ -26,11 +26,17 @@ Be prepared to demonstrate your understanding of this week's concepts by answeri
 
 1. Differences between using _sessions_ or _JSON Web Tokens_ for authentication.
 
+Sessions are local storage for auth while JST persit through request
+
 2. What does `bcrypt` do to help us store passwords in a secure manner.
 
+It uses an algorithm to read a password and then hash the password a certain number of times.
+
 3. How are unit tests different from integration and end-to-end testing.
+   Unit Testing are tested separately while integration are tested combined and is performed after unit testing and before system testing.
 
 4. How _Test Driven Development_ changes the way we write applications and tests.
+   TDD is commonly used develpment methodology by which tests are initially created to fail and then aims to focuses on passing the test by wrting a correct test. And repeating the all the steps again to write a test. There is advantages of TDD testing which reduces the reliance on debugging, consideers the user experience and can decrease overall development time.
 
 You are expected to be able to answer questions in these areas. Your responses contribute to your Sprint Challenge grade.
 
