@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs"); // need this for hashing
 const Users = require("../users/user-model");
 
 const newToken = require("./addToken");
+const { validateCredentials } = require("../users/user-validation");
 
 router.post("/register", (req, res) => {
   const user = req.body;
@@ -26,21 +27,22 @@ router.post("/register", (req, res) => {
 });
 
 router.post("/login", (req, res) => {
-  let { username, password } = req.body;
-
-  Users.findBy({ username })
-    .first()
-    .then((user) => {
-      if (user && bcrypt.compareSync(password, user.password)) {
-        const token = newToken(user);
-        res.status(200).json({ message: `Welcome ${user.username}`, token });
-      } else {
-        res.status(401).json({ message: "Credentials not valid" });
-      }
-    })
-    .catch((error) => {
-      res.status(500).json({ message: error.message });
-    });
+  const creds = req.body;
+  const isValid = validateCredentials(creds);
+  if (isValid) {
+    Users.findBy({ username: creds.username })
+      .then(([user]) => {
+        if (user && bcrypt.compareSync(creds.password, user.password)) {
+          const token = newToken(user);
+          res.status(200).json({ message: `Welcome ${user.username}`, token });
+        } else {
+          res.status(401).json({ message: "Credentials not valid" });
+        }
+      })
+      .catch((error) => {
+        res.status(500).json({ message: error.message });
+      });
+  }
 });
 
 module.exports = router;
