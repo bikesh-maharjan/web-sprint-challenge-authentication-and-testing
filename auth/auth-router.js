@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs"); // need this for hashing
 const Users = require("../users/user-model");
 
 const newToken = require("./addToken");
-const makeJwt = require("./addToken");
 
 router.post("/register", (req, res) => {
   const user = req.body;
