@@ -34,7 +34,7 @@ router.post("/login", (req, res) => {
       .then(([user]) => {
         if (user && bcrypt.compareSync(creds.password, user.password)) {
           const token = makeJwt(user);
-          res.status(200).json({ token });
+          res.status(200).json({ message: "welcome", user, token });
         } else {
           res.status(401).json({ message: "Credentials not valid" });
         }
@@ -63,7 +63,9 @@ function makeJwt({ id, username }) {
     subject: id,
   };
   const config = {
-    jwtSecret: "This is the super secret you can ever be secure from",
+    jwtSecret:
+      process.env.JWT_SECRET ||
+      "This is the super secret you can ever be secure from",
   };
   const options = {
     expiresIn: "2h",
