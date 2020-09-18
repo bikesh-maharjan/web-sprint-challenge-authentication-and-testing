@@ -3,7 +3,7 @@ const db = require("../database/dbConfig");
 module.exports = {
   get,
   add,
-  find,
+  // find,
   findBy,
   // findById,
 };
@@ -17,10 +17,10 @@ function add(user) {
 
   return db("users").insert(user);
 }
-function find() {
-  // here we are finding users by their id username and password
-  return db("users").select("id", "username", "password");
-}
+// function find() {
+//   // here we are finding users by their id username and password
+//   return db("users").select("id", "username", "password");
+// }
 function findBy(filter) {
   // here we are filtering my its users
   return db("users").where(filter).orderBy("id");

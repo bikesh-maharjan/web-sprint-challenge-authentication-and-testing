@@ -4,9 +4,10 @@ const Users = require("../users/user-model");
 const jwt = require("jsonwebtoken");
 
 router.post("/register", (req, res) => {
+  // implementing registration
   const user = req.body;
   const isValid = validateUser(user);
-  if (isValid.isSuccessful === true) {
+  if (isValid) {
     const hash = bcrypt.hashSync(user.password, 8);
     user.password = hash;
 
@@ -27,12 +28,13 @@ router.post("/register", (req, res) => {
 router.post("/login", (req, res) => {
   const creds = req.body;
   const isValid = validateCredentials(creds);
+
   if (isValid) {
     Users.findBy({ username: creds.username })
       .then(([user]) => {
         if (user && bcrypt.compareSync(creds.password, user.password)) {
           const token = makeJwt(user);
-          res.status(200).json({ message: `Welcome ${user.username}`, token });
+          res.status(200).json({ token });
         } else {
           res.status(401).json({ message: "Credentials not valid" });
         }
@@ -64,7 +66,7 @@ function makeJwt({ id, username }) {
     jwtSecret: "This is the super secret you can ever be secure from",
   };
   const options = {
-    expiresIN: "2h",
+    expiresIn: "2h",
   };
   return jwt.sign(payload, config.jwtSecret, options);
 }

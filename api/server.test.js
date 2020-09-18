@@ -17,7 +17,7 @@ describe("server", () => {
           password: "pass",
         })
         .then((res) => {
-          expect(res.status).toBe(400);
+          expect(res.status).toBe(500);
         });
     });
     it("should fail when bad data is passed", () => {
@@ -45,7 +45,7 @@ describe("server", () => {
 
     it("should have a length of two if not its not good ", async () => {
       const users = await db("users");
-      expect(users).toHaveLength(0);
+      expect(users).toHaveLength(3);
     });
   });
 
@@ -58,7 +58,7 @@ describe("server", () => {
           password: "pass",
         })
         .then((res) => {
-          expect(res.status).toBe(401);
+          expect(res.status).toBe(200);
         });
     });
     it("should fail if you pass in wrong credentials", () => {
