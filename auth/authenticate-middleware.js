@@ -5,17 +5,16 @@
 
 const jwt = require("jsonwebtoken");
 
-const { jwtSecret } = require("../database/secrets/authSecret");
-
 module.exports = (req, res, next) => {
-  const { authorization } = req.headers;
+  const token = req.headers.authorization;
+  const secret = "This is the super secret you can ever be secure from";
 
-  if (authorization) {
-    jwt.verify(authorization, jwtSecret, (err, decodedToken) => {
+  if (token) {
+    jwt.verify(token, secret, (err, decodedToken) => {
       if (err) {
         res.status(401).json({ you: "shall not pass!" });
       } else {
-        req.decodedToken = decodedToken;
+        req.jwt = decodedToken;
         next();
       }
     });

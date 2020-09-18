@@ -1,16 +1,21 @@
 const db = require("../database/dbConfig");
 
 module.exports = {
+  get,
   add,
   find,
   findBy,
-  findById,
+  // findById,
 };
 
-async function add(user) {
+function get() {
+  return db("users");
+}
+
+function add(user) {
   // here we are adding users
-  const [id] = await db("users").insert(user);
-  return findById(id);
+
+  return db("users").insert(user);
 }
 function find() {
   // here we are finding users by their id username and password
@@ -18,9 +23,9 @@ function find() {
 }
 function findBy(filter) {
   // here we are filtering my its users
-  return db("users").where(filter);
+  return db("users").where(filter).orderBy("id");
 }
-function findById() {
-  // here were are finding by its users id
-  return db("users").where({ id }).first();
-}
+// function findById() {
+//   // here were are finding by its users id
+//   return db("users").where({ id }).first();
+// }

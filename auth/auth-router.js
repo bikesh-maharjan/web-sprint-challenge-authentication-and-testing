@@ -1,12 +1,7 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs"); // need this for hashing
 const Users = require("../users/user-model");
-
-const newToken = require("./addToken");
-const {
-  validateCredentials,
-  validateUser,
-} = require("../users/user-validation");
+const jwt = require("jsonwebtoken");
 
 router.post("/register", (req, res) => {
   const user = req.body;
@@ -17,7 +12,7 @@ router.post("/register", (req, res) => {
 
     Users.add(user)
       .then((newUser) => {
-        const token = newToken(newUser);
+        const token = makeJwt(newUser);
         res.status(201).json({ data: newUser, token });
       })
       .catch((error) => {
@@ -36,7 +31,7 @@ router.post("/login", (req, res) => {
     Users.findBy({ username: creds.username })
       .then(([user]) => {
         if (user && bcrypt.compareSync(creds.password, user.password)) {
-          const token = newToken(user);
+          const token = makeJwt(user);
           res.status(200).json({ message: `Welcome ${user.username}`, token });
         } else {
           res.status(401).json({ message: "Credentials not valid" });
@@ -45,7 +40,33 @@ router.post("/login", (req, res) => {
       .catch((error) => {
         res.status(500).json({ message: error.message });
       });
+  } else {
+    res.status(400).json({
+      message: "invalid information",
+    });
   }
 });
+
+function validateUser(user) {
+  return user.username && user.password ? true : false;
+}
+
+function validateCredentials(creds) {
+  return creds.username && creds.password ? true : false;
+}
+
+function makeJwt({ id, username }) {
+  const payload = {
+    username,
+    subject: id,
+  };
+  const config = {
+    jwtSecret: "This is the super secret you can ever be secure from",
+  };
+  const options = {
+    expiresIN: "2h",
+  };
+  return jwt.sign(payload, config.jwtSecret, options);
+}
 
 module.exports = router;
